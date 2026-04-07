@@ -456,10 +456,6 @@ Pytanie: ${userText}
     let delay = 1000;
     for (let i = 0; i < retries; i++) {
       try {
-<<<<<<< HEAD
-=======
-        // ZMIANA: Wysyłamy zapytanie do serwera Vercel (zamiast do Google)
->>>>>>> c3cd9238403fe716ddf0abdf0f399f77341e0924
         const response = await fetch(`/api/chat`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -482,11 +478,7 @@ Pytanie: ${userText}
         return data.candidates?.[0]?.content?.parts?.[0]?.text || "Przepraszam, nie udało mi się wygenerować odpowiedzi.";
       } catch (error) {
         if (i === retries - 1) {
-<<<<<<< HEAD
           return `🚨 **Szczegóły błędu:**\n${error.message}`;
-=======
-          return `🚨 **Szczegóły błędu:**\n${error.message}\n\nSprawdź zakładkę **Logs** w panelu Vercel! (Jeśli testujesz lokalnie na komputerze, użyj publicznego linku z Vercel).`;
->>>>>>> c3cd9238403fe716ddf0abdf0f399f77341e0924
         }
         await new Promise(res => setTimeout(res, delay));
         delay *= 2;
