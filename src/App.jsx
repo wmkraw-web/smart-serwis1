@@ -412,8 +412,6 @@ function ChatInterface({ device, history, updateHistory }) {
   };
 
   const callGeminiAPI = async (userText, retries = 5) => {
-    // USUNIĘTO SPRAWDZANIE KLUCZA PO STRONIE FRONTENDU!
-
     const prompt = `
 Użytkownik pyta o urządzenie:
 Marka: ${device.brand}
@@ -432,7 +430,7 @@ Pytanie: ${userText}
     let delay = 1000;
     for (let i = 0; i < retries; i++) {
       try {
-        // TUTA JEST KLUCZ! Wysyłamy zapytanie prosto do naszego bezpiecznego serwera na Vercel
+        // ZMIANA: Wysyłamy zapytanie do serwera Vercel (zamiast do Google)
         const response = await fetch(`/api/chat`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -440,15 +438,22 @@ Pytanie: ${userText}
         });
 
         if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(`Błąd serwera: ${response.status} - ${errorData.error?.message || errorData.error || 'Odrzucono'}`);
+          let errorText = await response.text();
+          let errorMsg = errorText;
+          try {
+            const parsed = JSON.parse(errorText);
+            errorMsg = parsed.error?.message || parsed.error || errorText;
+          } catch(e) {
+            if (errorMsg.length > 150) errorMsg = errorMsg.substring(0, 150) + '...';
+          }
+          throw new Error(`Błąd ${response.status} - ${errorMsg}`);
         }
         
         const data = await response.json();
         return data.candidates?.[0]?.content?.parts?.[0]?.text || "Przepraszam, nie udało mi się wygenerować odpowiedzi.";
       } catch (error) {
         if (i === retries - 1) {
-          return `🚨 **Błąd komunikacji z serwerem:**\n${error.message}`;
+          return `🚨 **Szczegóły błędu:**\n${error.message}\n\nSprawdź zakładkę **Logs** w panelu Vercel! (Jeśli testujesz lokalnie na komputerze, użyj publicznego linku z Vercel).`;
         }
         await new Promise(res => setTimeout(res, delay));
         delay *= 2;
@@ -495,7 +500,6 @@ Pytanie: ${userText}
     });
   };
 
-  // Zmienione szybkie pytania, aby uniknąć błędów tłumacza!
   const quickPrompts = [
     "Szukaj instrukcji PDF",
     "Znaczenie kodów błędów",
