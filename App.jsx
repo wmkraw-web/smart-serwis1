@@ -91,7 +91,13 @@ export default function App() {
   return (
     <div className="h-[100dvh] bg-slate-50 flex flex-col font-sans overflow-hidden">
       <header className="bg-blue-600 text-white shadow-md p-3 flex flex-col sm:flex-row items-center justify-between shrink-0 gap-3 z-10">
-        <div className="flex items-center gap-2 w-full sm:w-auto justify-center sm:justify-start">
+        
+        {/* LOGO KLIKALNE - POWRÓT DO STRONY GŁÓWNEJ */}
+        <div 
+          onClick={() => { resetForm(); setActiveTab('list'); }}
+          className="flex items-center gap-2 w-full sm:w-auto justify-center sm:justify-start cursor-pointer hover:text-blue-200 transition-colors"
+          title="Wróć na stronę główną"
+        >
           <Wrench className="w-5 h-5 sm:w-6 sm:h-6" />
           <h1 className="text-lg sm:text-xl font-bold tracking-wide truncate">AGD/RTV Assistant</h1>
         </div>
@@ -112,21 +118,22 @@ export default function App() {
             <span className="hidden sm:inline">Dodaj</span>
           </button>
           
+          {/* PRZYCISK KAWY Z TEKSTEM */}
           <a 
             href="https://buycoffee.to/magiccolor" 
             target="_blank" 
             rel="noopener noreferrer"
             title="Postaw kawę twórcy"
-            className="flex items-center justify-center px-3 py-2 bg-amber-500 hover:bg-amber-400 text-white rounded-md transition-colors font-medium shadow-sm"
+            className="flex items-center justify-center gap-1.5 px-3 py-2 bg-amber-500 hover:bg-amber-400 text-white rounded-md transition-colors font-medium shadow-sm text-xs sm:text-sm"
           >
             <Coffee className="w-4 h-4" />
+            <span className="hidden sm:inline">Postaw kawę</span>
           </a>
         </nav>
       </header>
 
       <main className="flex-1 w-full max-w-6xl mx-auto p-2 sm:p-4 flex gap-6 overflow-hidden relative">
         
-        {/* Sidebar z urządzeniami (Desktop) */}
         {activeTab === 'chat' && (
           <div className="w-1/3 bg-white rounded-xl shadow-sm border border-slate-200 p-4 hidden md:flex flex-col overflow-y-auto">
             <h2 className="font-semibold text-slate-700 mb-4 flex items-center gap-2 shrink-0">
@@ -149,13 +156,11 @@ export default function App() {
 
         <div className="flex-1 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col w-full h-full">
           
-          {/* WIDOK: Lista Urządzeń */}
           {activeTab === 'list' && (
-            <div className="p-4 sm:p-6 overflow-y-auto h-full relative">
+            <div className="p-4 sm:p-6 overflow-y-auto h-full relative flex flex-col">
               
               {devices.length === 0 ? (
-                // ZMODYFIKOWANA, PIĘKNA STRONA GŁÓWNA
-                <div className="flex flex-col items-center justify-center h-full text-center max-w-2xl mx-auto px-4">
+                <div className="flex flex-col items-center justify-center flex-1 text-center max-w-2xl mx-auto px-4">
                   <div className="bg-gradient-to-tr from-blue-600 to-cyan-500 p-6 rounded-3xl shadow-xl mb-8 relative">
                     <Sparkles className="w-8 h-8 text-yellow-300 absolute -top-3 -right-3" />
                     <Bot className="w-16 h-16 text-white" />
@@ -176,7 +181,7 @@ export default function App() {
               ) : (
                 <>
                   <h2 className="text-xl sm:text-2xl font-bold text-slate-800 mb-4 sm:mb-6">Zarządzanie Domowym Sprzętem</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-20">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
                     {devices.map(device => (
                       <div key={device.id} className="border border-slate-200 rounded-xl p-4 sm:p-5 hover:shadow-md transition-shadow relative group bg-white flex flex-col">
                         
@@ -260,10 +265,33 @@ export default function App() {
                   </div>
                 </>
               )}
+
+              {/* BANER WSPARCIA NA DOLE STRONY GŁÓWNEJ */}
+              <div className="mt-auto pt-8 pb-4 w-full">
+                <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+                  <div className="flex items-center gap-3 sm:gap-4 text-center sm:text-left">
+                    <div className="bg-amber-100 p-3 rounded-full shrink-0">
+                      <Coffee className="w-6 h-6 sm:w-8 sm:h-8 text-amber-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-amber-900 text-sm sm:text-base mb-1">Podoba Ci się ta aplikacja?</h4>
+                      <p className="text-xs sm:text-sm text-amber-700">Wspieraj dalszy rozwój i postaw wirtualną kawę twórcy!</p>
+                    </div>
+                  </div>
+                  <a 
+                    href="https://buycoffee.to/magiccolor" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-full sm:w-auto whitespace-nowrap px-5 py-3 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl shadow-sm transition-transform hover:-translate-y-0.5 flex items-center justify-center gap-2 text-sm"
+                  >
+                    ☕ Postaw kawę
+                  </a>
+                </div>
+              </div>
+
             </div>
           )}
 
-          {/* WIDOK: Formularz Dodawania/Edycji */}
           {activeTab === 'add' && (
             <div className="p-4 sm:p-6 max-w-2xl mx-auto w-full overflow-y-auto h-full">
               <h2 className="text-xl sm:text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">
@@ -365,7 +393,6 @@ export default function App() {
             </div>
           )}
 
-          {/* WIDOK: Czat z AI */}
           {activeTab === 'chat' && selectedDevice && (
             <ChatInterface 
               device={selectedDevice} 
@@ -380,7 +407,6 @@ export default function App() {
   );
 }
 
-// Komponent Czatu
 function ChatInterface({ device, history, updateHistory }) {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -412,8 +438,6 @@ function ChatInterface({ device, history, updateHistory }) {
   };
 
   const callGeminiAPI = async (userText, retries = 5) => {
-    // USUNIĘTO SPRAWDZANIE KLUCZA PO STRONIE FRONTENDU!
-
     const prompt = `
 Użytkownik pyta o urządzenie:
 Marka: ${device.brand}
@@ -432,7 +456,6 @@ Pytanie: ${userText}
     let delay = 1000;
     for (let i = 0; i < retries; i++) {
       try {
-        // TUTA JEST KLUCZ! Wysyłamy zapytanie prosto do naszego bezpiecznego serwera na Vercel
         const response = await fetch(`/api/chat`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -440,15 +463,22 @@ Pytanie: ${userText}
         });
 
         if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(`Błąd serwera: ${response.status} - ${errorData.error?.message || errorData.error || 'Odrzucono'}`);
+          let errorText = await response.text();
+          let errorMsg = errorText;
+          try {
+            const parsed = JSON.parse(errorText);
+            errorMsg = parsed.error?.message || parsed.error || errorText;
+          } catch(e) {
+            if (errorMsg.length > 150) errorMsg = errorMsg.substring(0, 150) + '...';
+          }
+          throw new Error(`Błąd ${response.status} - ${errorMsg}`);
         }
         
         const data = await response.json();
         return data.candidates?.[0]?.content?.parts?.[0]?.text || "Przepraszam, nie udało mi się wygenerować odpowiedzi.";
       } catch (error) {
         if (i === retries - 1) {
-          return `🚨 **Błąd komunikacji z serwerem:**\n${error.message}`;
+          return `🚨 **Szczegóły błędu:**\n${error.message}`;
         }
         await new Promise(res => setTimeout(res, delay));
         delay *= 2;
@@ -495,7 +525,6 @@ Pytanie: ${userText}
     });
   };
 
-  // Zmienione szybkie pytania, aby uniknąć błędów tłumacza!
   const quickPrompts = [
     "Szukaj instrukcji PDF",
     "Znaczenie kodów błędów",
